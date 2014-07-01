@@ -20,11 +20,68 @@ var addTweet = function(newTweet){
   streams.home.push(newTweet);
 };
 
+
 // utility function
 var randomElement = function(array){
   var randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 };
+    
+ var appendHistory=  function(name) {
+ // console.log(localuser);
+ // console.log(streams.users[tweet.user]);
+ // console.log(streams.users[localuser]);
+ console.log(name);
+$("#history").html('');
+ var historyindex = streams.users[name].length - 1;
+        while(historyindex >= 0){
+          var historytweet = streams.users[name][historyindex];
+          var $historytweet = $('<div></div>');
+          $historytweet.text('@' + historytweet.user + ': ' + historytweet.message + "              " + historytweet.created_at);
+          $historytweet.appendTo($("#history"));
+          historyindex -= 1;
+         }
+
+
+
+  };
+//Automated tweet appender with jquery functions
+var appendTweets = function(){
+     var $body = $('#message');
+        $body.html('');
+
+        var index = streams.home.length - 1;
+        while(index >= 0){
+          var tweet = streams.home[index];
+          var $tweet = $('<div class = "tweetclass"></div>');
+          $tweet.text('@' + tweet.user + ': ' + tweet.message + "              " + tweet.created_at);
+         $tweet.data('name', tweet.user);
+//console.log($tweet.data('name'));
+   $tweet.hover(
+  function() {
+    $( this ).css("background-color","white");
+
+appendHistory($( this ).data("name"));
+
+
+  }, function() {
+     $('history').html('');
+     $( this ).css("background-color","lightgrey");
+  });
+     
+      
+
+
+          $tweet.appendTo($body);
+          index -= 1;
+
+}
+    
+
+
+      
+};
+
 
 // random tweet generator
 var opening = ['just', '', '', '', '', 'ask me how i', 'completely', 'nearly', 'productively', 'efficiently', 'last night i', 'the president', 'that wizard', 'a ninja', 'a seedy old man'];
@@ -52,6 +109,7 @@ for(var i = 0; i < 10; i++){
 
 var scheduleNextTweet = function(){
   generateRandomTweet();
+  appendTweets();
   setTimeout(scheduleNextTweet, Math.random() * 1500);
 };
 scheduleNextTweet();
